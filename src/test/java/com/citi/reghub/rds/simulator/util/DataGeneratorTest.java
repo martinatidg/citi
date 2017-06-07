@@ -17,7 +17,6 @@ public class DataGeneratorTest {
 	DataGenerator generator;
     @Before
     public void initProperties() {
-    	System.out.println("initProperties ............");
         EntityProperties properties = mock(EntityProperties.class);
         when(properties.getTotal()).thenReturn(100);
         when(properties.getStreams()).thenReturn("M2TR:30,M2PR:30,M2PO:40");
@@ -30,19 +29,16 @@ public class DataGeneratorTest {
 
     @Test
 	public void testGetTotalRecordNum() {
-    	System.out.println("testGetTotalRecordNum ............");
     	assertEquals(generator.getTotalRecordNum(), 100);
 	}
     
     @Test
 	public void testGetIntervalTime() {
-    	System.out.println("testGetIntervalTime ............");
-    	assertEquals(generator.getIntervalTime(), 0);
+    	assertEquals(generator.getIntervalTime(), 0);	// the current version is always 0
 	}
 
     @Test
 	public void testGetBaseEntity() {
-    	System.out.println("testGetIntervalTime ............");
     	assertNotNull(generator.getOneEntity());
 	}
 
