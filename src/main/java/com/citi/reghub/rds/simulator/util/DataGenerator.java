@@ -1,0 +1,184 @@
+package com.citi.reghub.rds.simulator.util;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.citi.reghub.rds.simulator.domain.Entity;
+import com.citi.reghub.rds.simulator.domain.Info;
+import com.citi.reghub.rds.simulator.enums.SourceStatus;
+import com.citi.reghub.rds.simulator.enums.Status;
+
+@Component
+public class DataGenerator {
+	private static Logger log = LoggerFactory.getLogger(DataGenerator.class);
+
+	private Map<String, Integer> streamMap;
+	private List<String> streamList;
+	private List<String> flowList;
+	private int timeFrame; // minute
+	private int totalRecordNum;
+	private int batchSize;
+	private int intervalTime;
+
+	@Autowired
+	public DataGenerator(EntityProperties entityProperties) {
+		streamMap = new HashMap<>();
+		streamList = new ArrayList<>();
+		flowList = new ArrayList<>();
+
+		totalRecordNum = entityProperties.getTotal();
+		timeFrame = entityProperties.getTimeframe();
+		batchSize = entityProperties.getBatchSize();
+		
+		intervalTime = isTimeframeValid(timeFrame, totalRecordNum) ? (timeFrame * 60 * 1000) / (totalRecordNum / batchSize) : 0;
+		intervalTime = 0;	// disable the time frame function.
+
+		String[] streams = entityProperties.getStreams().split(",");
+		int percentageSum = 0;
+		int remainNum = totalRecordNum;		// used for the last stream to avoid the inaccurate of the divide calculation
+
+		for (int i = 0; i < streams.length - 1; i++) {
+			String[] splitStr = streams[i].split(":");
+			int streamPercentage = 0;
+
+			try {
+				streamPercentage = Integer.parseInt(splitStr[1]);
+				percentageSum += streamPercentage;
+				
+				// validate the percentage value in the settings file. The sum of all streams' percentage should not be greater than 100
+				if (percentageSum >= 100) {
+					log.error("In valid values: the sum of percentage values for streams is greater than 100%.");
+					System.exit(1);
+				}
+				
+			} catch (NumberFormatException e) {
+				log.error("The settings.properties file contains invalid values.");
+				System.exit(1);
+			}
+			
+			int eachTreamNum = (streamPercentage * totalRecordNum) / 100;
+			remainNum -= eachTreamNum;
+			streamMap.put(splitStr[0], eachTreamNum); // record number for each of the stream names
+			streamList.add(splitStr[0]);
+		}
+
+		// the last element of the stream
+		if (streams.length > 0) {
+			streamMap.put(streams[streams.length-1], remainNum);
+			streamList.add(streams[streams.length-1]);
+		}
+
+		String flows = entityProperties.getFlows();
+		flowList = Arrays.asList(flows.split(","));
+		
+		log.info("\nSettings file content:\n" + "streams: " + entityProperties.getStreams()
+					+ "\nflows: " + flows + "\ntotal: " + totalRecordNum + "\ntimeFrame: " + timeFrame + "\nbatch size: " + batchSize);
+	}
+
+	// To distribute the insertion operations in a time frame, get the waiting time for each insertion.
+	public int getIntervalTime() {
+		return intervalTime;
+	}
+
+	public int getTotalRecordNum() {
+		return totalRecordNum;
+	}
+
+	public Entity getBaseEntity() {
+		List<String> reasonCodes = new ArrayList<String>();
+		Info info = getBaseInfo();
+
+		return new Entity(Status.getRandomElement(), "stream", "flow", "sourceUId", "sourceId", "sourceVersion",
+				SourceStatus.getRandomElement(), "sourceSystem", "regReportingRef", 
+				LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now(), reasonCodes, info);
+	}
+	
+	private Info getBaseInfo() {
+		return new Info("PACW1", "sub type", LocalDateTime.now(), "EUR", LocalDateTime.now(), "7921619", LocalDate.of(2016, 7, 4),
+				"New", "0109", "origSrcSys", "02", "ACCOUNTMNEMONIC", "EUR", "BUY", "FII", "ACCOUNTMNEMONIC",
+				LocalDateTime.parse("2017-01-10 00:00:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
+				new BigDecimal("2500.000000"), new BigDecimal("47.300000"), new BigDecimal("47.300000"),
+				new BigDecimal("100.000000"), "Market", "02WB644", "AGENCY");
+	}
+
+	public Entity getOneEntity() {
+		String rstr = getRandomStream();
+		if (rstr == null || rstr.trim().isEmpty()) {
+			return null;
+		}
+
+		Entity entity = getBaseEntity();
+
+		entity.setStream(rstr);
+		entity.setFlow(getRandomFlow());
+
+		return entity;
+	}
+
+	public List<Entity> getBatchEntity() {
+		List<Entity> entityList = new ArrayList<>();
+
+		for (int i = 0; i < batchSize; i++) {
+			Entity entity = getBaseEntity();
+
+			String rstr = getRandomStream();
+			if (rstr == null || rstr.trim().isEmpty()) {
+				break;
+			}
+
+			entity.setStream(rstr);
+			entity.setFlow(getRandomFlow());
+			//entity.setReceivedTs(LocalDateTime.now());
+			entityList.add(entity);
+		}
+
+		return entityList;
+	}
+
+	// Each of the stream names is assigned a percentage of the total record.
+	// The percentage is set in the settings properties file.
+	// Select a stream from the available stream list and the number of the stream
+	// is decreased by one and if it's 0, the the stream name is removed from the list
+	private String getRandomStream() {
+		int streamSize = streamList.size();
+		if (streamSize < 1) {
+			return ""; // finished creating all records
+		}
+
+		int selectedIndex = Util.getRandomInteger(streamSize);
+		String strm = streamList.get(selectedIndex);
+		int remainStream = streamMap.get(strm);
+
+		remainStream--;
+		if (remainStream < 1) {
+			streamList.remove(strm);
+			streamMap.remove(strm);
+		} else {
+			streamMap.put(strm, remainStream);
+		}
+
+		return strm;
+	}
+
+	private String getRandomFlow() {
+		int selectedIndex = Util.getRandomInteger(flowList.size());
+		return flowList.get(selectedIndex);
+	}
+
+	private boolean isTimeframeValid(int timeFrame, int recordNum) {
+		int factor = 1; 	// use the factor to set the time frame value must not less than how many times of the record numer.
+		return timeFrame * 60 * 1000 < recordNum * factor ? false : true;
+	}
+}
