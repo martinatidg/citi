@@ -1,7 +1,5 @@
 package com.citi.reghub.rds.simulator.util;
 
-//import org.testng.annotations.Before;
-//import org.testng.annotations.Test;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -46,13 +46,7 @@ The info element also contains the following elements:
 	cptyAcctId;
 	tradeCapacity;
 
-2. Files in the package
- -  simulator-0.1.0.jar
- -  settings.properties
- -  runSimulator.bat
- -  runSimulator.sh
- 
-3. settings.properties
+2. settings.properties
 This properties file is used to set the parameters to run DataSimulator. here is an example:
 streams=M2TR:30,M2PR:30,M2PO:40
 flows=CEQ,CFI,F01,F02,F03,F04,F05,F06,F07,F08
@@ -66,6 +60,12 @@ batchsize=1
 -- timefrmae: this value always set 1. It is for a feature of future versions.
 -- batchsize: this value always set 1. It is for a feature of future versions.
 
-4. How to run it
-Fow windows, run runSimulator.bat or double click it.
+3. How to run:
+Copy or move the four files below in the same directory:
+ -  simulator-0.1.0.jar
+ -  settings.properties
+ -  runSimulator.bat
+ -  runSimulator.sh
+
+For windows, run runSimulator.bat or double click it.
 For Unix/Linux, run runSimulator.sh
