@@ -63,12 +63,6 @@ This properties file is used to set the parameters to run DataSimulator. here is
       - mongo.db=simulator
       - mongo.username=
       - mongo.password=
-      - #mongo.host=maas-gt-d1-u0031
-      - #mongo.port=37017
-      - #mongo.db=entities-sit
-      - #mongo.username=mt66710
-      - #mongo.password=Szerda15
-
 
    - streams: the data may come from different streams. This is a list of streams with each stream separated by a comma(,). Each stream in the list consists of the steam name and the percentage of the stream in the total records. The name and the percentage are separated by colon(:).
    - flows: the possible flow names of the test data. the flow is randomly selected for each record.
