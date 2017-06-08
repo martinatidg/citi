@@ -85,6 +85,8 @@ Copy or move the four files below in the same directory:
    -  runSimulator.bat
    -  runSimulator.sh
 
-- For windows, run runSimulator.bat or double click it.
 
-- For Unix/Linux, run runSimulator.sh
+For windows, run runSimulator.bat or double click it.
+
+
+For Unix/Linux, run runSimulator.sh
