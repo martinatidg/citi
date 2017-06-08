@@ -7,10 +7,10 @@
 		<version>1.5.3.RELEASE</version>
 	</parent>
 
-	<groupId>com.citi.reghub.rds.simulator</groupId>
-	<artifactId>simulator</artifactId>
+	<groupId>com.citi.reghub.rds</groupId>
+	<artifactId>rds-data-simulator</artifactId>
 	<version>0.1.0</version>
-	<name>reghub-simulator</name>
+	<name>data-simulator</name>
 	<description>Reghub App Simulator</description>
 
 	<properties>
