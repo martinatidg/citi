@@ -37,7 +37,7 @@ class ApplicationConfig extends AbstractMongoConfiguration {
 		String username = env.getProperty("mongo.username");
 		String password = env.getProperty("mongo.password");
 
-		log.info("MongHost = " + mongoHost + ", dbName = " + dbName + ", mongoPort = " + mongoPort + ", username = " + username + ", password = " + password);
+		log.info("MongHost = " + mongoHost + ", dbName = " + dbName + ", mongoPort = " + mongoPort + ", username = " + username);
 
 		if ("localhost".equalsIgnoreCase(mongoHost)) {
 			return new MongoClient("localhost",  mongoPort);
