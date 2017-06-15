@@ -1,4 +1,4 @@
-package com.citi.reghub.rds.simulator.enums;
+package com.citi.reghub.rds.simulator.domain;
 
 import com.citi.reghub.rds.simulator.util.Util;
 

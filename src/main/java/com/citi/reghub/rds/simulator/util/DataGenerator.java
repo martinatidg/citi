@@ -13,44 +13,55 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import com.citi.reghub.rds.simulator.domain.Entity;
 import com.citi.reghub.rds.simulator.domain.Info;
-import com.citi.reghub.rds.simulator.enums.SourceStatus;
-import com.citi.reghub.rds.simulator.enums.Status;
+import com.citi.reghub.rds.simulator.domain.SourceStatus;
+import com.citi.reghub.rds.simulator.domain.Status;
 
 @Component
 public class DataGenerator {
 	private static Logger log = LoggerFactory.getLogger(DataGenerator.class);
 
+	private int totalRecordNum;
+	private int batchSize;
+
 	private Map<String, Integer> streamMap;
 	private List<String> streamList;
 	private List<String> flowList;
-	private int timeFrame; // minute
-	private int totalRecordNum;
-	private int batchSize;
 	private int intervalTime;
 
 	@Autowired
-	public DataGenerator(EntityProperties entityProperties) {
+	public DataGenerator(
+			@Value("${rds.simulator.streams}") String streams,
+			@Value("${rds.simulator.flows}") String flows,
+			@Value("${rds.simulator.total}") int total,
+			@Value("${rds.simulator.timeframe}") int timeFrame,
+			@Value("${rds.simulator.batchsize}") int batchSize
+			) {
+
+		log.info("\nSettings file content:\n" + "streams: " + streams
+				+ "\nflows: " + flows + "\ntotal: " + total + "\ntimeFrame: " + timeFrame + "\nbatch size: " + batchSize);
+		
 		streamMap = new HashMap<>();
 		streamList = new ArrayList<>();
 		flowList = new ArrayList<>();
 
-		totalRecordNum = entityProperties.getTotal();
-		timeFrame = entityProperties.getTimeframe();
-		batchSize = entityProperties.getBatchSize();
+		totalRecordNum = total;
+		this.batchSize = batchSize; //entityProperties.getBatchSize();
 		
 		intervalTime = isTimeframeValid(timeFrame, totalRecordNum) ? (timeFrame * 60 * 1000) / (totalRecordNum / batchSize) : 0;
-		intervalTime = 0;	// disable the time frame function.
+		intervalTime = 0;	// disable the time frame function for this version.
 
-		String[] streams = entityProperties.getStreams().split(",");
+		String[] streamArray = streams.split(",");
 		int percentageSum = 0;
 		int remainNum = totalRecordNum;		// used for the last stream to avoid the inaccurate of the divide calculation
 
-		for (int i = 0; i < streams.length - 1; i++) {
-			String[] splitStr = streams[i].split(":");
+		for (int i = 0; i < streamArray.length - 1; i++) {
+			String[] splitStr = streamArray[i].split(":");
 			int streamPercentage = 0;
 
 			try {
@@ -75,16 +86,12 @@ public class DataGenerator {
 		}
 
 		// the last element of the stream
-		if (streams.length > 0) {
-			streamMap.put(streams[streams.length-1], remainNum);
-			streamList.add(streams[streams.length-1]);
+		if (streamArray.length > 0) {
+			streamMap.put(streamArray[streamArray.length-1], remainNum);
+			streamList.add(streamArray[streamArray.length-1]);
 		}
 
-		String flows = entityProperties.getFlows();
 		flowList = Arrays.asList(flows.split(","));
-		
-		log.info("\nSettings file content:\n" + "streams: " + entityProperties.getStreams()
-					+ "\nflows: " + flows + "\ntotal: " + totalRecordNum + "\ntimeFrame: " + timeFrame + "\nbatch size: " + batchSize);
 	}
 
 	// To distribute the insertion operations in a time frame, get the waiting time for each insertion.

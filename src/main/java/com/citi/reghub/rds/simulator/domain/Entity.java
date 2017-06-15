@@ -8,9 +8,6 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import com.citi.reghub.rds.simulator.enums.SourceStatus;
-import com.citi.reghub.rds.simulator.enums.Status;
-
 @Document(collection = "entity")
 public class Entity {
 	@Id
