@@ -71,7 +71,7 @@ This properties file is used to set the parameters to run DataSimulator. here is
 
 3. How to run:
 
-All the required files to run the the program is put in a ZIP file, rds-data-simulator-0.1.0-release.zip. Unzip it any where, a folder 'rds-data-simulator-0.1.0' contains the following files: 
+All the required files to run the the program is put in a ZIP file, rds-data-simulator-0.1.0-release.zip. Unzip it any where and you will see a folder 'rds-data-simulator-0.1.0' which contains the following files: 
 
    -  rsd-data-simulator-0.1.0.jar
    -  settings.properties
