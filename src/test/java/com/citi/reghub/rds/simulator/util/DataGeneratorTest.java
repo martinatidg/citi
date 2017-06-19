@@ -14,7 +14,7 @@ public class DataGeneratorTest {
 	DataGenerator generator;
     @Before
     public void initProperties() {
-        generator = new DataGenerator("M2TR:30,M2PR:30,M2PO:40", "CEQ,CFI,F01,F02,F03,F04,F05,F06,F07,F08", 100, 60, 10);
+        generator = new DataGenerator("M2TR:30,M2PR:30,M2PO:40", "CEQ,CFI,F01,F02,F03,F04,F05,F06,F07,F08", 100, 60, 10, 25);
     }
 
     @Test

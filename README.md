@@ -53,20 +53,24 @@ The info element also contains the following elements:
 
 This properties file is used to set the parameters to run DataSimulator. here is an example:
 
-      - streams=M2TR:30,M2PR:30,M2PO:40
-      - flows=CEQ,CFI,F01,F02,F03,F04,F05,F06,F07,F08
-      - total=100
-      - timeframe=1
-      - batchsize=10
+      - rds.simulator.streams=M2TR:30,M2PR:30,M2PO:40
+      - rds.simulator.flows=CEQ,CFI,F01,F02,F03,F04,F05,F06,F07,F08
+      - rds.simulator.total=100
+      - rds.simulator.timeframe=1
+      - rds.simulator.batchsize=10
+      - rds.simulator.nonEligible=15
       - spring.data.mongodb.uri=mongodb://localhost/simulator
       - #spring.data.mongodb.uri=mongodb://USERNAME:PASSWORD@HOSTNAME:PORT/DBNAME
+      - spring.main.web-environment=false
 
    - streams: the data may come from different streams. This is a list of streams with each stream separated by a comma(,). Each stream in the list consists of the steam name and the percentage of the stream in the total records. The name and the percentage are separated by colon(:).
-   - flows: the possible flow names of the test data. the flow is randomly selected for each record.
-   - total: total records.
-   - timefrmae: this value always set 1. It is for a feature of future versions.
-   - batchsize: the record number to save to MongoDB in batch.
+   - rds.simulator.flows: the possible flow names of the test data. the flow is randomly selected for each record.
+   - rds.simulator.total: total records.
+   - rds.simulator.timefrmae: this value always set 1. It is for a feature of future versions.
+   - rds.simulator.batchsize: the record number to save to MongoDB in batch.
+   - rds.simulator.nonEligible: the percentage of records with isRDSEligible is false
    - spring.data.mongodb.uri: the Spring property for accessing the MongoDB. The user need to set it.
+   - spring.main.web-environment: disable the web environment
 
 
 3. How to run:
