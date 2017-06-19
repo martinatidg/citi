@@ -53,7 +53,7 @@ public class DataGenerator {
 		totalRecordNum = total;
 		this.batchSize = batchSize; //entityProperties.getBatchSize();
 		
-		intervalTime = isTimeframeValid(timeFrame, totalRecordNum) ? (timeFrame * 60 * 1000) / (totalRecordNum / batchSize) : 0;
+		//intervalTime = isTimeframeValid(timeFrame, totalRecordNum) ? (timeFrame * 60 * 1000) / (totalRecordNum / batchSize) : 0;
 		intervalTime = 0;	// disable the time frame function for this version.
 
 		String[] streamArray = streams.split(",");
@@ -87,8 +87,9 @@ public class DataGenerator {
 
 		// the last element of the stream
 		if (streamArray.length > 0) {
-			streamMap.put(streamArray[streamArray.length-1], remainNum);
-			streamList.add(streamArray[streamArray.length-1]);
+			String[] splitStr = streamArray[streamArray.length-1].split(":");
+			streamMap.put(splitStr[0], remainNum);
+			streamList.add(splitStr[0]);
 		}
 
 		flowList = Arrays.asList(flows.split(","));
@@ -138,20 +139,17 @@ public class DataGenerator {
 		List<Entity> entityList = new ArrayList<>();
 
 		for (int i = 0; i < batchSize; i++) {
-			Entity entity = getBaseEntity();
-
-			String rstr = getRandomStream();
-			if (rstr == null || rstr.trim().isEmpty()) {
+			Entity entity = getOneEntity();
+			
+			if (entity == null) {
 				break;
 			}
-
-			entity.setStream(rstr);
-			entity.setFlow(getRandomFlow());
-			//entity.setReceivedTs(LocalDateTime.now());
+			
 			entityList.add(entity);
+
 		}
 
-		return entityList;
+		return entityList.isEmpty() ? null : entityList;
 	}
 
 	// Each of the stream names is assigned a percentage of the total record.

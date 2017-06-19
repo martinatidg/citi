@@ -1,5 +1,7 @@
 package com.citi.reghub.rds.simulator.util;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +19,14 @@ public class Simulator {
 	
 
 	public void runSimulator() {
-		Entity entity = dataGenerator.getOneEntity();
+		long start = System.currentTimeMillis();
+		//Entity entity = dataGenerator.getOneEntity();
+		List<Entity> entity = dataGenerator.getBatchEntity();
 		int recSaved = 0;
 
 		while (entity != null) {
 			entityRepository.save(entity);
-			++recSaved;
+			recSaved += entity.size();
 
 			try {
 				Thread.sleep(dataGenerator.getIntervalTime());
@@ -31,9 +35,11 @@ public class Simulator {
 				break;
 			}
 			
-			entity = dataGenerator.getOneEntity();
+			entity = dataGenerator.getBatchEntity();
 		}
+		
+		long end = System.currentTimeMillis();
 
-		log.info("Total number of records saved to database: " + recSaved);
+		log.info("" + recSaved + " records saved to MongoDB. Time used: " + Util.getTimeStr(end - start));
 	}
 }

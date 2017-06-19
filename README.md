@@ -55,9 +55,9 @@ This properties file is used to set the parameters to run DataSimulator. here is
 
       - streams=M2TR:30,M2PR:30,M2PO:40
       - flows=CEQ,CFI,F01,F02,F03,F04,F05,F06,F07,F08
-      - total=20
+      - total=100
       - timeframe=1
-      - batchsize=1
+      - batchsize=10
       - spring.data.mongodb.uri=mongodb://localhost/simulator
       - #spring.data.mongodb.uri=mongodb://USERNAME:PASSWORD@HOSTNAME:PORT/DBNAME
 
@@ -65,7 +65,7 @@ This properties file is used to set the parameters to run DataSimulator. here is
    - flows: the possible flow names of the test data. the flow is randomly selected for each record.
    - total: total records.
    - timefrmae: this value always set 1. It is for a feature of future versions.
-   - batchsize: this value always set 1. It is for a feature of future versions.
+   - batchsize: the record number to save to MongoDB in batch.
    - spring.data.mongodb.uri: the Spring property for accessing the MongoDB. The user need to set it.
 
 
@@ -79,7 +79,8 @@ All the required files to run the the program is put in a ZIP file, rds-data-sim
    -  runSimulator.sh
    -  README.md
 
-
+Start the MongoDB server.
+ 
 For windows, run runSimulator.bat or double click it.
 
 
