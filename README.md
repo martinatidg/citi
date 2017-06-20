@@ -19,6 +19,7 @@ The data comprise records and each record has the below elements:
 	- publishedTs;
 	- executionTs;
 	- lastUpdatedTs;
+	- isRDSEligible
 	- reasonCodes;
 	- info; 
 
@@ -63,7 +64,7 @@ This properties file is used to set the parameters to run DataSimulator. here is
       - #spring.data.mongodb.uri=mongodb://USERNAME:PASSWORD@HOSTNAME:PORT/DBNAME
       - spring.main.web-environment=false
 
-   - streams: the data may come from different streams. This is a list of streams with each stream separated by a comma(,). Each stream in the list consists of the steam name and the percentage of the stream in the total records. The name and the percentage are separated by colon(:).
+   - streams: the data may come from different streams. This is a list of streams with each stream separated by a comma(,). Each stream in the list consists of the steam name and the percentage of the stream in all records. The name and the percentage are separated by colon(:).
    - rds.simulator.flows: the possible flow names of the test data. the flow is randomly selected for each record.
    - rds.simulator.total: total records.
    - rds.simulator.timefrmae: this value always set 1. It is for a feature of future versions.
@@ -83,9 +84,10 @@ All the required files to run the the program is put in a ZIP file, rds-data-sim
    -  runSimulator.sh
    -  README.md
 
+The user need to change the settings.properties file.
+
 Start the MongoDB server.
  
 For windows, run runSimulator.bat or double click it.
-
 
 For Unix/Linux, run runSimulator.sh
