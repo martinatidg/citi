@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,8 @@ import com.citi.reghub.rds.simulator.domain.Status;
 @Component
 public class DataGenerator {
 	private static Logger log = LoggerFactory.getLogger(DataGenerator.class);
+	
+	private Random random = new Random();
 
 	private int totalRecordNum;
 	private int batchSize;
@@ -33,6 +36,8 @@ public class DataGenerator {
 	private List<String> streamList;
 	private List<String> flowList;
 	private int intervalTime;
+	
+	private int nonEligibleNum; // number of eligible records
 
 	@Autowired
 	public DataGenerator(
@@ -40,7 +45,8 @@ public class DataGenerator {
 			@Value("${rds.simulator.flows}") String flows,
 			@Value("${rds.simulator.total}") int total,
 			@Value("${rds.simulator.timeframe}") int timeFrame,
-			@Value("${rds.simulator.batchsize}") int batchSize
+			@Value("${rds.simulator.batchsize}") int batchSize,
+			@Value("${rds.simulator.batchsize}") int nonEligible
 			) {
 
 		log.info("\nSettings file content:\n" + "streams: " + streams
@@ -49,11 +55,12 @@ public class DataGenerator {
 		streamMap = new HashMap<>();
 		streamList = new ArrayList<>();
 		flowList = new ArrayList<>();
-
+		
 		totalRecordNum = total;
 		this.batchSize = batchSize; //entityProperties.getBatchSize();
-		
-		intervalTime = isTimeframeValid(timeFrame, totalRecordNum) ? (timeFrame * 60 * 1000) / (totalRecordNum / batchSize) : 0;
+		nonEligibleNum = (nonEligible * totalRecordNum) / 100;
+
+		//intervalTime = isTimeframeValid(timeFrame, totalRecordNum) ? (timeFrame * 60 * 1000) / (totalRecordNum / batchSize) : 0;
 		intervalTime = 0;	// disable the time frame function for this version.
 
 		String[] streamArray = streams.split(",");
@@ -87,8 +94,9 @@ public class DataGenerator {
 
 		// the last element of the stream
 		if (streamArray.length > 0) {
-			streamMap.put(streamArray[streamArray.length-1], remainNum);
-			streamList.add(streamArray[streamArray.length-1]);
+			String[] splitStr = streamArray[streamArray.length-1].split(":");
+			streamMap.put(splitStr[0], remainNum);
+			streamList.add(splitStr[0]);
 		}
 
 		flowList = Arrays.asList(flows.split(","));
@@ -127,9 +135,11 @@ public class DataGenerator {
 		}
 
 		Entity entity = getBaseEntity();
+		boolean eligible = this.getRandomBoolean();
 
 		entity.setStream(rstr);
 		entity.setFlow(getRandomFlow());
+		entity.setRDSEligible(eligible);
 
 		return entity;
 	}
@@ -138,20 +148,17 @@ public class DataGenerator {
 		List<Entity> entityList = new ArrayList<>();
 
 		for (int i = 0; i < batchSize; i++) {
-			Entity entity = getBaseEntity();
-
-			String rstr = getRandomStream();
-			if (rstr == null || rstr.trim().isEmpty()) {
+			Entity entity = getOneEntity();
+			
+			if (entity == null) {
 				break;
 			}
-
-			entity.setStream(rstr);
-			entity.setFlow(getRandomFlow());
-			//entity.setReceivedTs(LocalDateTime.now());
+			
 			entityList.add(entity);
+
 		}
 
-		return entityList;
+		return entityList.isEmpty() ? null : entityList;
 	}
 
 	// Each of the stream names is assigned a percentage of the total record.
@@ -187,5 +194,19 @@ public class DataGenerator {
 	private boolean isTimeframeValid(int timeFrame, int recordNum) {
 		int factor = 1; 	// use the factor to set the time frame value must not less than how many times of the record numer.
 		return timeFrame * 60 * 1000 < recordNum * factor ? false : true;
+	}
+
+	private boolean getRandomBoolean() {
+		if (nonEligibleNum < 1) {
+			return true;
+		}
+
+		boolean rb = random.nextBoolean();
+		
+		if (!rb) {
+			nonEligibleNum--;
+		}
+		
+		return rb;
 	}
 }

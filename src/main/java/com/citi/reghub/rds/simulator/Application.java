@@ -12,15 +12,16 @@ import com.citi.reghub.rds.simulator.util.Simulator;
 @EnableMongoRepositories
 public class Application implements CommandLineRunner {
 	@Autowired
-	Simulator simulator; // = new Simulator();
+	Simulator simulator;
 
     public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
+    	SpringApplication.run(Application.class, args);
     }
 
 	@Override
 	public void run(String... arg0) throws Exception {
 		simulator.runSimulator();
+		System.exit(0);		// Explicit call this because when run from Eclipse, it will not exit automatically.
 	}
 
 }

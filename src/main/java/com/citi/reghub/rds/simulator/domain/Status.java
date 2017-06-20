@@ -6,6 +6,6 @@ public enum Status {
 	REPORTABLE, NON_REPORTABLE, EXCEPTION, PENDING, REPORTED, REJECTED;
 	
 	public static Status getRandomElement() {
-		return Status.values()[ Util.getRandomInteger(Status.values().length)];
+		return Status.values()[Util.getRandomInteger(Status.values().length)];
 	}
 }
