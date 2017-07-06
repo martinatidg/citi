@@ -1,11 +1,15 @@
 package com.citi.reghub.rds.simulator.domain;
 
+import java.util.Random;
+
 import com.citi.reghub.rds.simulator.util.Util;
 
 public enum Status {
 	REPORTABLE, NON_REPORTABLE, EXCEPTION, PENDING, REPORTED, REJECTED;
 	
+	static private Random random = new Random();
+	
 	public static Status getRandomElement() {
-		return Status.values()[Util.getRandomInteger(Status.values().length)];
+		return Status.values()[random.nextInt(Status.values().length)];
 	}
 }

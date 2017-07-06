@@ -1,11 +1,13 @@
 package com.citi.reghub.rds.simulator.domain;
 
-import com.citi.reghub.rds.simulator.util.Util;
+import java.util.Random;
 
 public enum SourceStatus {
 	NEW, AMEND, CANCEL;
 	
+	static private Random random = new Random();
+
 	public static SourceStatus getRandomElement() {
-		return SourceStatus.values()[Util.getRandomInteger(SourceStatus.values().length)];
+		return SourceStatus.values()[random.nextInt(SourceStatus.values().length)];
 	}
 }
