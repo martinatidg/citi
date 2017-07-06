@@ -13,20 +13,20 @@ public class Entity {
 	@Id
 	@Indexed
 	@Field("id")
-	private String regHubId;				// reghub generated unique id for each message
+	private String regHubId;			// reghub generated unique id for each message
 	private Status status;				// reghub reporting status e.g. REPORTABLE, NON_REPORTABLE, EXCEPTION, PENDING, REPORTED, REJECTED 
 	private String stream;				// reporting stream (always 4 char) e.g. M2TR, M2PR, M2PO
-	private String flow;					// reporting asset class / product (always 3 char) e.g. CEQ (cash equities), CFI (cash fixed income)
+	private String flow;				// reporting asset class / product (always 3 char) e.g. CEQ (cash equities), CFI (cash fixed income)
 	private String sourceUId;			// unique id for a message received from source e.g. OceanId for transaction reporting
-	private String sourceId;				// trade/quote/order id
+	private String sourceId;			// trade/quote/order id
 	private String sourceVersion;		// trade/quote/order version
-	private SourceStatus sourceStatus;			// always normalised to NEW, AMEND and CANCEL
-	private String sourceSystem;			// upstream source system generated the message e.g. TPS, PRIMO
+	private SourceStatus sourceStatus;	// always normalised to NEW, AMEND and CANCEL
+	private String sourceSystem;		// upstream source system generated the message e.g. TPS, PRIMO
 	private String regReportingRef;		// used as reporting id for trade/quote/order/transaction e.g. stream + flow + sourceId
 	private LocalDateTime receivedTs;	// Time when entity is received in reghub
 	private LocalDateTime publishedTs;	// trade activity time .i.r when this trade version was created
 	private LocalDateTime executionTs;	// trade origination time
-	private LocalDateTime lastUpdatedTs;	// timestamp of last activity in reghub, classical updated timestamp for reghub
+	private LocalDateTime lastUpdatedTs; // timestamp of last activity in reghub, classical updated timestamp for reghub
 	private boolean isRDSEligible;
 
 	private List<String> reasonCodes;
@@ -38,7 +38,6 @@ public class Entity {
 			String sourceVersion, SourceStatus sourceStatus, String sourceSystem, String regReportingRef, LocalDateTime receivedTs,
 			LocalDateTime publishedTs, LocalDateTime executionTs, LocalDateTime lastUpdatedTs, List<String> reasonCodes, Info info) {
 		super();
-		//this.regHubId = regHubId;
 		this.status = status;
 		this.stream = stream;
 		this.flow = flow;
@@ -117,11 +116,9 @@ public class Entity {
 		this.regReportingRef = regReportingRef;
 	}
 	public LocalDateTime getReceivedTs() {
-//	public String getReceivedTs() {
 		return receivedTs;
 	}
 	public void setReceivedTs(LocalDateTime receivedTs) {
-	//public void setReceivedTs(String receivedTs) {
 		this.receivedTs = receivedTs;
 	}
 	public LocalDateTime getPublishedTs() {
@@ -190,8 +187,7 @@ public class Entity {
 				+ ", sourceUId=" + sourceUId + ", sourceId=" + sourceId + ", sourceVersion=" + sourceVersion
 				+ ", sourceStatus=" + sourceStatus + ", sourceSystem=" + sourceSystem + ", regReportingRef="
 				+ regReportingRef + ", receivedTs=" + receivedTs + ", publishedTs=" + publishedTs + ", executionTs="
-				+ executionTs + ", lastUpdatedTs=" + lastUpdatedTs + ", isRDSEligible=" + isRDSEligible + ", reasonCodes=" + reasonCodes + ", flags=" + info
+				+ executionTs + ", lastUpdatedTs=" + lastUpdatedTs + ", isRDSEligible=" + isRDSEligible + ", reasonCodes=" + reasonCodes + ", info=" + info
 				+ "]";
 	}
-
 }

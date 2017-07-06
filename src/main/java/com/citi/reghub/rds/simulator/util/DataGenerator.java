@@ -15,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import com.citi.reghub.rds.simulator.domain.Entity;
@@ -25,18 +24,15 @@ import com.citi.reghub.rds.simulator.domain.Status;
 
 @Component
 public class DataGenerator {
-	private static Logger log = LoggerFactory.getLogger(DataGenerator.class);
+	private static Logger LOGGER = LoggerFactory.getLogger(DataGenerator.class);
 	
 	private Random random = new Random();
-
 	private int totalRecordNum;
 	private int batchSize;
-
 	private Map<String, Integer> streamMap;
 	private List<String> streamList;
 	private List<String> flowList;
 	private int intervalTime;
-	
 	private int nonEligibleNum; // number of eligible records
 
 	@Autowired
@@ -49,8 +45,8 @@ public class DataGenerator {
 			@Value("${rds.simulator.batchsize}") int nonEligible
 			) {
 
-		log.info("\nSettings file content:\n" + "streams: " + streams
-				+ "\nflows: " + flows + "\ntotal: " + total + "\ntimeFrame: " + timeFrame + "\nbatch size: " + batchSize);
+		LOGGER.info("\nSettings file content:\n" + "streams: {}\nflows: {}\ntotal: {}\ntimeFrame: {}\nbatch size: {}",
+				streams, flows, total, timeFrame, batchSize);
 		
 		streamMap = new HashMap<>();
 		streamList = new ArrayList<>();
@@ -59,8 +55,6 @@ public class DataGenerator {
 		totalRecordNum = total;
 		this.batchSize = batchSize; //entityProperties.getBatchSize();
 		nonEligibleNum = (nonEligible * totalRecordNum) / 100;
-
-		//intervalTime = isTimeframeValid(timeFrame, totalRecordNum) ? (timeFrame * 60 * 1000) / (totalRecordNum / batchSize) : 0;
 		intervalTime = 0;	// disable the time frame function for this version.
 
 		String[] streamArray = streams.split(",");
@@ -77,12 +71,11 @@ public class DataGenerator {
 				
 				// validate the percentage value in the settings file. The sum of all streams' percentage should not be greater than 100
 				if (percentageSum >= 100) {
-					log.error("In valid values: the sum of percentage values for streams is greater than 100%.");
+					LOGGER.error("Invalid values: the sum of percentage for streams is greater than 100%.");
 					System.exit(1);
 				}
-				
 			} catch (NumberFormatException e) {
-				log.error("The settings.properties file contains invalid values.");
+				LOGGER.error("The settings.properties file contains invalid values.");
 				System.exit(1);
 			}
 			
@@ -149,13 +142,11 @@ public class DataGenerator {
 
 		for (int i = 0; i < batchSize; i++) {
 			Entity entity = getOneEntity();
-			
 			if (entity == null) {
 				break;
 			}
 			
 			entityList.add(entity);
-
 		}
 
 		return entityList.isEmpty() ? null : entityList;
@@ -171,7 +162,7 @@ public class DataGenerator {
 			return ""; // finished creating all records
 		}
 
-		int selectedIndex = Util.getRandomInteger(streamSize);
+		int selectedIndex = random.nextInt(streamSize);
 		String strm = streamList.get(selectedIndex);
 		int remainStream = streamMap.get(strm);
 
@@ -187,13 +178,8 @@ public class DataGenerator {
 	}
 
 	private String getRandomFlow() {
-		int selectedIndex = Util.getRandomInteger(flowList.size());
+		int selectedIndex = random.nextInt(flowList.size());
 		return flowList.get(selectedIndex);
-	}
-
-	private boolean isTimeframeValid(int timeFrame, int recordNum) {
-		int factor = 1; 	// use the factor to set the time frame value must not less than how many times of the record numer.
-		return timeFrame * 60 * 1000 < recordNum * factor ? false : true;
 	}
 
 	private boolean getRandomBoolean() {

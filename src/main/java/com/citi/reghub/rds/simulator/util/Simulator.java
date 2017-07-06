@@ -10,17 +10,15 @@ import com.citi.reghub.rds.simulator.domain.Entity;
 import com.citi.reghub.rds.simulator.repository.EntityRepository;
 
 public class Simulator {
-	private static Logger log = LoggerFactory.getLogger(Simulator.class);
-	@Autowired
-	private DataGenerator dataGenerator;
+	private static Logger LOGGER = LoggerFactory.getLogger(Simulator.class);
 
 	@Autowired
+	private DataGenerator dataGenerator;
+	@Autowired
 	private EntityRepository entityRepository;
-	
 
 	public void runSimulator() {
 		long start = System.currentTimeMillis();
-		//Entity entity = dataGenerator.getOneEntity();
 		List<Entity> entity = dataGenerator.getBatchEntity();
 		int recSaved = 0;
 
@@ -31,7 +29,7 @@ public class Simulator {
 			try {
 				Thread.sleep(dataGenerator.getIntervalTime());
 			} catch (InterruptedException e) {
-				log.error("runSimulator error:\n" + e.getMessage());
+				LOGGER.error("runSimulator error:\n{}", e.getMessage());
 				break;
 			}
 			
@@ -40,6 +38,6 @@ public class Simulator {
 		
 		long end = System.currentTimeMillis();
 
-		log.info("" + recSaved + " records saved to MongoDB. Time used: " + Util.getTimeStr(end - start));
+		LOGGER.info("{} records saved to MongoDB. Time used: {}.", recSaved, Util.convertLongToTime(end - start));
 	}
 }
