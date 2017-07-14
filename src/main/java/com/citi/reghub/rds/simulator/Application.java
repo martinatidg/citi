@@ -21,7 +21,6 @@ public class Application implements CommandLineRunner {
 	@Override
 	public void run(String... arg0) throws Exception {
 		simulator.runSimulator();
-		System.exit(0);		// Explicit call this because when run from Eclipse, it will not exit automatically.
 	}
 
 }
