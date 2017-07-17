@@ -24,7 +24,7 @@ import com.citi.reghub.rds.simulator.domain.Status;
 
 @Component
 public class DataGenerator {
-	private static Logger logger = LoggerFactory.getLogger(DataGenerator.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DataGenerator.class);
 	
 	private Random random = new Random();
 	private int totalRecordNum;
@@ -45,7 +45,7 @@ public class DataGenerator {
 			@Value("${rds.simulator.batchsize}") int nonEligible
 			) {
 
-		logger.info("\nSettings file content:\n" + "streams: {}\nflows: {}\ntotal: {}\ntimeFrame: {}\nbatch size: {}",
+		LOGGER.info("\nSettings file content:\n" + "streams: {}\nflows: {}\ntotal: {}\ntimeFrame: {}\nbatch size: {}",
 				streams, flows, total, timeFrame, batchSize);
 		
 		streamMap = new HashMap<>();
@@ -71,11 +71,11 @@ public class DataGenerator {
 				
 				// validate the percentage value in the settings file. The sum of all streams' percentage should not be greater than 100
 				if (percentageSum >= 100) {
-					logger.error("Invalid values: the sum of percentage for streams is greater than 100%.");
+					LOGGER.error("Invalid values: the sum of percentage for streams is greater than 100%.");
 					System.exit(1);
 				}
 			} catch (NumberFormatException e) {
-				logger.error("The settings.properties file contains invalid values.");
+				LOGGER.error("The settings.properties file contains invalid values.");
 				System.exit(1);
 			}
 			
