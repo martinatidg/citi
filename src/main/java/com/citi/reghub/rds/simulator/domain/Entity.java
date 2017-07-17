@@ -32,8 +32,6 @@ public class Entity {
 	private List<String> reasonCodes;
 	private Info info;
 
-	public Entity() {}
-
 	public Entity(Status status, String stream, String flow, String sourceUId, String sourceId,
 			String sourceVersion, SourceStatus sourceStatus, String sourceSystem, String regReportingRef, LocalDateTime receivedTs,
 			LocalDateTime publishedTs, LocalDateTime executionTs, LocalDateTime lastUpdatedTs, List<String> reasonCodes, Info info) {

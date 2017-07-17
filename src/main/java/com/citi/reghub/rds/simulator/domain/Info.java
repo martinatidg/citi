@@ -30,8 +30,6 @@ public class Info {
 	private String cptyAcctId;  			// "02WB644"
 	private String tradeCapacity;  			// "AGENCY"
 
-	public Info() {}
-
 	public Info(String firmAcctId, String tradeSubType, LocalDateTime tradeExecTs, String settlementCcy, LocalDateTime rioTxnTs, String securityId,
 			LocalDate tradeDate, String tradeExecType, String traderId, String origSrcSys, String sourceFirmCode, String firmAcctIdType,
 			String tradePriceCcy, String buySellInd, String securityIdType, String cptyAcctIdType, LocalDateTime oceanCreatedTs, BigDecimal tradeQty,

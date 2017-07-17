@@ -5,7 +5,7 @@ import java.util.Random;
 public enum SourceStatus {
 	NEW, AMEND, CANCEL;
 	
-	static private Random random = new Random();
+	private static Random random = new Random();
 
 	public static SourceStatus getRandomElement() {
 		return SourceStatus.values()[random.nextInt(SourceStatus.values().length)];
