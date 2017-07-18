@@ -105,7 +105,7 @@ public class DataGenerator {
 	}
 
 	public Entity getBaseEntity() {
-		List<String> reasonCodes = new ArrayList<String>();
+		List<String> reasonCodes = new ArrayList<>();
 		Info info = getBaseInfo();
 
 		return new Entity(Status.getRandomElement(), "stream", "flow", "sourceUId", "sourceId", "sourceVersion",
